@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.walletweb.Mapper.TransactionMapper">
+    <!-- 查询已完成账单 -->
+    <select id="getFinishedBill">
+        SELECT * FROM bill_finished
+        WHERE 1 = 1
+        <!-- 如果 sendUsername 不为空，增加条件 -->
+        <if test="sendUsername != null and sendUsername != ''">
+            AND sendUsername = #{sendUsername}
+        </if>
+        <!-- 如果 receiveUsername 不为空，增加条件 -->
+        <if test="receiveUsername != null and receiveUsername != ''">
+            AND receiveUsername = #{receiveUsername}
+        </if>
+        <!-- 如果 state 不为空，根据 state 修改查询条件 -->
+        <choose>
+            <when test="state == '付款'">
+                <if test="username != null and username != ''">
+                    AND sendUsername = #{username}
+                </if>
+            </when>
+            <when test="state == '收款'">
+                <if test="username != null and username != ''">
+                    AND receiveUsername = #{username}
+                </if>
+            </when>
+            <otherwise>
+                <!-- 如果 state 为其他值或为空，使用默认条件 -->
+                <if test="username != null and username != ''">
+                    AND (sendUsername = #{username} OR receiveUsername = #{username})
+                </if>
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 查询未完成账单 -->
+    <select id="getUnfinishedBill">
+        SELECT * FROM bill_unfinished
+        WHERE 1 = 1
+        <!-- 如果 sendUsername 不为空，增加条件 -->
+        <if test="sendUsername != null and sendUsername != ''">
+            AND sendUsername = #{sendUsername}
+        </if>
+        <!-- 如果 receiveUsername 不为空，增加条件 -->
+        <if test="receiveUsername != null and receiveUsername != ''">
+            AND receiveUsername = #{receiveUsername}
+        </if>
+        <!-- 如果 state 不为空，根据 state 修改查询条件 -->
+        <choose>
+            <when test="state == '付款'">
+                <if test="username != null and username != ''">
+                    AND sendUsername = #{username}
+                </if>
+            </when>
+            <when test="state == '收款'">
+                <if test="username != null and username != ''">
+                    AND receiveUsername = #{username}
+                </if>
+            </when>
+            <otherwise>
+                <!-- 如果 state 为其他值或为空，使用默认条件 -->
+                <if test="username != null and username != ''">
+                    AND (sendUsername = #{username} OR receiveUsername = #{username})
+                </if>
+            </otherwise>
+        </choose>
+    </select>
+</mapper>
